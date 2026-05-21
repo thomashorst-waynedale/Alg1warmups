@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Algebra Pulse - Student</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; width: 80%; max-width: 500px; }
+        input, button { padding: 15px; font-size: 1.2rem; margin: 10px; width: 80%; border-radius: 8px; border: 1px solid #ccc; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 id="q-text">Waiting for teacher...</h2>
+        <div id="input-area"></div>
+    </div>
 
+    <script>
+        // In a real classroom, you'd use Firebase or a Google Sheet Webhook here.
+        // For now, this is the UI logic.
+        function loadQuestion(q) {
+            document.getElementById('q-text').innerText = q.q;
+            const area = document.getElementById('input-area');
+            area.innerHTML = '';
+            if(q.type === 'numeric') {
+                area.innerHTML = '<input type="number" id="ans" placeholder="Type answer..."><button onclick="submit()">Submit</button>';
+            } else {
+                q.options.forEach(opt => {
+                    area.innerHTML += `<button onclick="submit('${opt}')">${opt}</button>`;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
