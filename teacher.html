@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; }
+        #controls { width: 30%; padding: 20px; border-right: 1px solid #ccc; height: 100vh; overflow-y: scroll; }
+        #display { width: 70%; padding: 20px; text-align: center; }
+        .q-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .q-item:hover { background: #e9ecef; }
+        canvas { max-width: 600px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <h3>100 Question Bank</h3>
+        <div id="q-list"></div>
+    </div>
+    <div id="display">
+        <h2 id="active-q">Select a Question</h2>
+        <div id="viz-buttons"></div>
+        <canvas id="myChart"></canvas>
+    </div>
 
+    <script>
+        let chart;
+        fetch('questions.json').then(r => r.json()).then(data => {
+            const list = document.getElementById('q-list');
+            data.forEach(q => {
+                let div = document.createElement('div');
+                div.className = 'q-item';
+                div.innerText = `${q.id}. ${q.std}`;
+                div.onclick = () => activate(q);
+                list.appendChild(div);
+            });
+        });
+
+        function activate(q) {
+            document.getElementById('active-q').innerText = q.q;
+            const btnArea = document.getElementById('viz-buttons');
+            btnArea.innerHTML = '';
+            q.viz.forEach(v => {
+                btnArea.innerHTML += `<button onclick="showViz('${v}')">${v.toUpperCase()}</button> `;
+            });
+        }
+
+        function showViz(type) {
+            if(chart) chart.destroy();
+            const ctx = document.getElementById('myChart').getContext('2d');
+            // Mock data for prototype - in live, this pulls from student submissions
+            const mockData = [10, 15, 8, 12]; 
+            chart = new Chart(ctx, {
+                type: type === 'two-way-table' ? 'bar' : 'bar', // Using bar for table visualization
+                data: {
+                    labels: ["Choice A", "Choice B", "Choice C", "Choice D"],
+                    datasets: [{ label: 'Class Distribution', data: mockData, backgroundColor: '#007bff' }]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
