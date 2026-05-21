@@ -39,14 +39,19 @@
             });
         });
 
-        async function activate(q) {
+    async function activate(q) {
             document.getElementById('active-title').innerText = q.q;
             const ctrl = document.getElementById('controls');
+            
+            // Clear old buttons and show status
             ctrl.innerHTML = '<h3>Question pushed to Chromebooks!</h3>';
+            
+            // Create buttons for the visualizations allowed for this question
             q.viz.forEach(v => {
                 ctrl.innerHTML += `<button class="viz-btn" onclick="renderChart('${v}')">Show ${v.toUpperCase()}</button>`;
             });
 
+            // THIS IS THE TEACHER CODE: It tells Google to update the "Current Question"
             await fetch(webAppUrl, {
                 method: "POST",
                 mode: "no-cors",
@@ -54,14 +59,33 @@
             });
         }
 
-        function renderChart(type) {
+        async function renderChart(type) {
             if(chart) chart.destroy();
             const ctx = document.getElementById('chart').getContext('2d');
-            // Logic for real data retrieval from Sheets would go here
-            chart = new Chart(ctx, {
-                type: type === 'boxplot' ? 'bar' : 'bar', 
-                data: { labels: ['A', 'B', 'C', 'D'], datasets: [{ label: 'Class Responses', data: [5, 12, 3, 1], backgroundColor: '#007bff' }] }
-            });
+            
+            // THIS IS THE TEACHER CODE: It fetches REAL student data from your sheet
+            try {
+                const response = await fetch(webAppUrl + "?action=getResults");
+                const stats = await response.json();
+
+                chart = new Chart(ctx, {
+                    type: 'bar', // Using bar for histograms and categorical data
+                    data: {
+                        labels: Object.keys(stats), // The unique student answers
+                        datasets: [{
+                            label: 'Class Responses',
+                            data: Object.values(stats), // The count of each answer
+                            backgroundColor: '#007bff'
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
+                });
+            } catch (e) {
+                console.error("Error fetching data:", e);
+                alert("No responses found yet. Check if students have submitted!");
+            }
         }
     </script>
 </body>
