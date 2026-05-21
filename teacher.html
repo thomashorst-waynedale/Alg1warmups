@@ -39,25 +39,23 @@
             });
         });
 
-    async function activate(q) {
-            document.getElementById('active-title').innerText = q.q;
-            const ctrl = document.getElementById('controls');
-            
-            // Clear old buttons and show status
-            ctrl.innerHTML = '<h3>Question pushed to Chromebooks!</h3>';
-            
-            // Create buttons for the visualizations allowed for this question
-            q.viz.forEach(v => {
-                ctrl.innerHTML += `<button class="viz-btn" onclick="renderChart('${v}')">Show ${v.toUpperCase()}</button>`;
-            });
+  async function activate(q) {
+    document.getElementById('active-title').innerText = q.q;
+    const ctrl = document.getElementById('controls');
+    
+    // Clear old buttons and show status
+    ctrl.innerHTML = '<h3>Question pushed to Chromebooks!</h3>';
+    
+    // Create buttons for the visualizations allowed for this question
+    q.viz.forEach(v => {
+        ctrl.innerHTML += `<button class="viz-btn" onclick="renderChart('${v}')">Show ${v.toUpperCase()}</button>`;
+    });
 
-            // THIS IS THE TEACHER CODE: It tells Google to update the "Current Question"
-            await fetch(webAppUrl, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify({ action: "setCurrentQuestion", questionId: q.id })
-            });
-        }
+    // THE FIX: We are now sending the ID via the URL (?action=setQ&id=...)
+    // This is much more reliable on school wifi than the old POST method.
+    console.log("Sending signal for question ID:", q.id);
+    await fetch(webAppUrl + "?action=setQ&id=" + q.id);
+}
 
         async function renderChart(type) {
             if(chart) chart.destroy();
