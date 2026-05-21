@@ -1,0 +1,22 @@
+[
+  { "id": 1, "std": "A.SSE.1", "q": "How many terms are in 5x² - 3x + 10?", "type": "numeric", "viz": ["histogram", "boxplot"] },
+  { "id": 2, "std": "A.REI.3", "q": "Solve mentally: 2x + 1 = 11", "type": "numeric", "viz": ["histogram", "boxplot"] },
+  { "id": 3, "std": "F.IF.4", "q": "Does y = 5x + 1 go 'Up' or 'Down' left-to-right?", "type": "categorical", "options": ["Up", "Down"], "viz": ["two-way-table"] },
+  { "id": 4, "std": "F.IF.2", "q": "If f(x) = 2x, what is f(12)?", "type": "numeric", "viz": ["histogram", "boxplot"] },
+  { "id": 5, "std": "A.REI.1", "q": "To solve x - 10 = 5, do you add or subtract 10?", "type": "categorical", "options": ["Add", "Subtract"], "viz": ["two-way-table"] },
+  { "id": 6, "std": "F.IF.6", "q": "What is the slope of a horizontal line?", "type": "numeric", "viz": ["histogram"] },
+  { "id": 7, "std": "N.Q.1", "q": "What is 10% of 80?", "type": "numeric", "viz": ["histogram", "boxplot"] },
+  { "id": 8, "std": "A.SSE.1", "q": "In y = x² + 7x - 4, what is the constant?", "type": "numeric", "viz": ["histogram"] },
+  { "id": 9, "std": "F.LE.1", "q": "Is y = 3^x Linear or Exponential?", "type": "categorical", "options": ["Linear", "Exponential"], "viz": ["two-way-table"] },
+  { "id": 10, "std": "A.APR.1", "q": "What is the leading coefficient of 4x² + 2x?", "type": "numeric", "viz": ["histogram"] },
+  { "id": 11, "std": "F.IF.1", "q": "Is {(1,2), (1,3)} a function? (Yes/No)", "type": "categorical", "options": ["Yes", "No"], "viz": ["two-way-table"] },
+  { "id": 12, "std": "A.REI.12", "q": "Is (0,0) a solution to y > x + 5?", "type": "categorical", "options": ["Yes", "No"], "viz": ["two-way-table"] },
+  { "id": 13, "std": "N.RN.2", "q": "What is the square root of 64?", "type": "numeric", "viz": ["histogram", "boxplot"] },
+  { "id": 14, "std": "F.IF.4", "q": "Is the y-intercept of y = 2x - 7 positive or negative?", "type": "categorical", "options": ["Positive", "Negative"], "viz": ["two-way-table"] },
+  { "id": 15, "std": "A.SSE.2", "q": "Factor mentally: x² - 9. One factor is (x+3), what's the other?", "type": "categorical", "options": ["(x-3)", "(x+3)", "(x-9)"], "viz": ["two-way-table"] },
+  { "id": 16, "std": "F.BF.3", "q": "Does y = x² + 5 move the graph Up or Down?", "type": "categorical", "options": ["Up", "Down"], "viz": ["two-way-table"] },
+  { "id": 17, "std": "A.REI.3", "q": "Solve: x/2 = 10", "type": "numeric", "viz": ["histogram"] },
+  { "id": 18, "std": "S.ID.7", "q": "In y = 4x + 2, which number represents the 'rate'?", "type": "numeric", "viz": ["histogram"] },
+  { "id": 19, "std": "F.IF.5", "q": "Can a person's height be a decimal? (Yes/No)", "type": "categorical", "options": ["Yes", "No"], "viz": ["two-way-table"] },
+  { "id": 20, "std": "A.CED.4", "q": "In d=rt, if you solve for r, is it d/t or t/d?", "type": "categorical", "options": ["d/t", "t/d"], "viz": ["two-way-table"] }
+]
