@@ -28,17 +28,27 @@
         // Fetch the master question list from your repo
         fetch('questions.json').then(r => r.json()).then(data => { questions = data; });
 
-        // Check for active question updates
+      // Check for active question updates
         setInterval(async () => {
             try {
-                const response = await fetch(webAppUrl);
+                // We add a timestamp (?t=) to force Google to give us fresh data, not a cached "0"
+                const response = await fetch(webAppUrl + "?t=" + Date.now(), {
+                    method: 'GET',
+                    mode: 'cors'
+                });
                 const activeId = await response.text();
-                if (activeId && activeId !== currentQId) {
-                    currentQId = activeId;
-                    const q = questions.find(item => item.id == activeId);
+                
+                // Clean the ID (removes any hidden spaces)
+                const cleanId = activeId.trim();
+
+                if (cleanId && cleanId !== "0" && cleanId !== currentQId) {
+                    currentQId = cleanId;
+                    const q = questions.find(item => item.id == cleanId);
                     if (q) renderQuestion(q);
                 }
-            } catch (e) { console.log("Connection sync..."); }
+            } catch (e) { 
+                console.log("Syncing with Google..."); 
+            }
         }, 2000);
 
         function renderQuestion(q) {
