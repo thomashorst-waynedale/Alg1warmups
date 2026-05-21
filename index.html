@@ -11,13 +11,15 @@
         button { background: #007bff; color: white; border: none; cursor: pointer; transition: 0.2s; font-weight: bold; }
         button:hover { background: #0056b3; transform: translateY(-2px); }
         .sent { color: #28a745; font-weight: bold; display: none; }
+        #debug { font-size: 0.8rem; color: #888; margin-top: 20px; font-family: monospace; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 id="q-text">Waiting for teacher to start...</h2>
+        <h2 id="q-text">Connecting to teacher...</h2>
         <div id="input-area"></div>
         <p id="msg" class="sent">Response Sent!</p>
+        <div id="debug">Initializing...</div>
     </div>
 
     <script>
@@ -25,55 +27,74 @@
         let currentQId = null;
         let questions = [];
 
-        // Fetch the master question list from your repo
-        fetch('questions.json').then(r => r.json()).then(data => { questions = data; });
+        const debugEl = document.getElementById('debug');
+        function log(msg) { debugEl.innerText = "System Status: " + msg; }
 
-      // Check for active question updates
+        // 1. Fetch the master question list safely
+        fetch('questions.json')
+            .then(r => r.json())
+            .then(data => { 
+                questions = data; 
+                log("Loaded " + questions.length + " questions from Vault.");
+            })
+            .catch(e => {
+                log("ERROR: Could not load questions.json. Check for typos/commas!");
+            });
+
+        // 2. Check for active question updates every 3 seconds
         setInterval(async () => {
+            if (questions.length === 0) return; // Wait until questions are loaded
+
             try {
-                // We add a timestamp (?t=) to force Google to give us fresh data, not a cached "0"
-                const response = await fetch(webAppUrl + "?t=" + Date.now(), {
-                    method: 'GET',
-                    mode: 'cors'
-                });
+                // Fetch the active ID from Google (no-cors removed to allow reading)
+                const response = await fetch(webAppUrl + "?t=" + Date.now());
                 const activeId = await response.text();
-                
-                // Clean the ID (removes any hidden spaces)
                 const cleanId = activeId.trim();
+
+                log("Google says active ID is: [" + cleanId + "]");
 
                 if (cleanId && cleanId !== "0" && cleanId !== currentQId) {
                     currentQId = cleanId;
                     const q = questions.find(item => item.id == cleanId);
-                    if (q) renderQuestion(q);
+                    
+                    if (q) {
+                        renderQuestion(q);
+                    } else {
+                        log("ERROR: Teacher pushed ID " + cleanId + ", but it's not in the JSON!");
+                    }
                 }
             } catch (e) { 
-                console.log("Syncing with Google..."); 
+                log("Attempting to connect to Google Engine..."); 
             }
-        }, 2000);
+        }, 3000);
 
         function renderQuestion(q) {
             document.getElementById('msg').style.display = 'none';
             document.getElementById('q-text').innerText = q.q;
             const area = document.getElementById('input-area');
             area.innerHTML = '';
+            
             if(q.type === 'numeric') {
-                area.innerHTML = '<input type="number" id="ans" placeholder="Enter number..."><button onclick="submit()">Send Answer</button>';
+                area.innerHTML = '<input type="number" id="ans" placeholder="Enter number..."><br><button onclick="submitAnswer()">Send Answer</button>';
             } else {
                 q.options.forEach(opt => {
-                    area.innerHTML += `<button onclick="submit('${opt}')">${opt}</button>`;
+                    area.innerHTML += `<button onclick="submitAnswer('${opt}')">${opt}</button>`;
                 });
             }
         }
 
-        async function submit(val) {
+        async function submitAnswer(val) {
             const ans = val || document.getElementById('ans').value;
             if(!ans) return;
+            
             document.getElementById('input-area').innerHTML = '<h3>Submitting...</h3>';
+            
             await fetch(webAppUrl, {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify({ action: "submitAnswer", questionId: currentQId, answer: ans })
             });
+            
             document.getElementById('msg').style.display = 'block';
         }
     </script>
